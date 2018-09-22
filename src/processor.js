@@ -79,6 +79,16 @@ function processRoom(roomId, {intents, roomObjects, users, roomTerrain, gameTime
                     invaders.push(object);
                 }
             }
+            if(object.type == 'invaderCore') {
+                object._actionLog = object.actionLog;
+                object.actionLog = {
+                    transferEnergy: null,
+                    repair: null,
+                    build: null,
+                    upgradeController: null,
+                    reserveController: null
+                };
+            }
             if (object.type == 'link') {
                 object._actionLog = object.actionLog;
                 object.actionLog = {
@@ -312,6 +322,8 @@ function processRoom(roomId, {intents, roomObjects, users, roomTerrain, gameTime
                 return;
             }
 
+            if (object.type == 'invaderCore')
+                require('./processor/intents/invader-core/tick')(object, scope);
             if (object.type == 'energy')
                 require('./processor/intents/energy/tick')(object, scope);
             if (object.type == 'source')
