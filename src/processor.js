@@ -75,7 +75,7 @@ function processRoom(roomId, {intents, roomObjects, users, roomTerrain, gameTime
                 };
                 if(object.user == KEEPER_ID) {
                     keepers.push(object);
-                } else if (object.user == INVADER_ID) {
+                } else if ((object.user == INVADER_ID) && !object.strongholdId) {
                     invaders.push(object);
                 }
             }
