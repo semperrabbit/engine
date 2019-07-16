@@ -358,7 +358,7 @@ exports.make = function(_runtimeData, _intents, _register, _globals) {
             if(!target.energy) {
                 return C.ERR_NOT_ENOUGH_RESOURCES;
             }
-            if(!target.pos.isNearTo(this.pos)) {
+            if(!target.pos.inRangeTo(this.pos, C.RANGE_HARVEST_SOURCE)) {
                 return C.ERR_NOT_IN_RANGE;
             }
             if(this.room.controller && (
@@ -373,7 +373,7 @@ exports.make = function(_runtimeData, _intents, _register, _globals) {
             if(!target.mineralAmount) {
                 return C.ERR_NOT_ENOUGH_RESOURCES;
             }
-            if(!target.pos.isNearTo(this.pos)) {
+            if(!target.pos.inRangeTo(this.pos, C.RANGE_HARVEST_MINERAL)) {
                 return C.ERR_NOT_IN_RANGE;
             }
             var extractor = _.find(target.pos.lookFor('structure'), {structureType: C.STRUCTURE_EXTRACTOR});
@@ -481,7 +481,7 @@ exports.make = function(_runtimeData, _intents, _register, _globals) {
             }
         }
 
-        if(!target.pos.isNearTo(this.pos)) {
+        if(!target.pos.inRangeTo(this.pos, C.RANGE_TRANSFER)) {
             return C.ERR_NOT_IN_RANGE;
         }
         if(!data(this.id)[resourceType]) {
@@ -629,7 +629,7 @@ exports.make = function(_runtimeData, _intents, _register, _globals) {
             }
         }
 
-        if(!target.pos.isNearTo(this.pos)) {
+        if(!target.pos.inRangeTo(this.pos, C.RANGE_WITHDRAW)) {
             return C.ERR_NOT_IN_RANGE;
         }
 
@@ -701,7 +701,7 @@ exports.make = function(_runtimeData, _intents, _register, _globals) {
         if(utils.calcResources(this.carry) >= this.carryCapacity) {
             return C.ERR_FULL;
         }
-        if(!target.pos.isNearTo(this.pos)) {
+        if(!target.pos.inRangeTo(this.pos, C.RANGE_PICKUP)) {
             return C.ERR_NOT_IN_RANGE;
         }
 
@@ -739,7 +739,7 @@ exports.make = function(_runtimeData, _intents, _register, _globals) {
             return C.ERR_INVALID_TARGET;
         }
 
-        if(!target.pos.isNearTo(this.pos)) {
+        if(!target.pos.inRangeTo(this.pos, C.RANGE_ATTACK)) {
             return C.ERR_NOT_IN_RANGE;
         }
 
@@ -767,7 +767,7 @@ exports.make = function(_runtimeData, _intents, _register, _globals) {
             register.assertTargetObject(target);
             return C.ERR_INVALID_TARGET;
         }
-        if(!this.pos.inRangeTo(target, 3)) {
+        if(!this.pos.inRangeTo(target, C.RANGE_RANGED_ATTACK)) {
             return C.ERR_NOT_IN_RANGE;
         }
 
@@ -816,7 +816,7 @@ exports.make = function(_runtimeData, _intents, _register, _globals) {
             register.assertTargetObject(target);
             return C.ERR_INVALID_TARGET;
         }
-        if(!target.pos.isNearTo(this.pos)) {
+        if(!target.pos.inRangeTo(this.pos, C.RANGE_HEAL)) {
             return C.ERR_NOT_IN_RANGE;
         }
         if(this.room.controller && !this.room.controller.my && this.room.controller.safeMode) {
@@ -875,7 +875,7 @@ exports.make = function(_runtimeData, _intents, _register, _globals) {
             register.assertTargetObject(target);
             return C.ERR_INVALID_TARGET;
         }
-        if(!this.pos.inRangeTo(target, 3)) {
+        if(!this.pos.inRangeTo(target, C.RANGE_REPAIR)) {
             return C.ERR_NOT_IN_RANGE;
         }
 
@@ -902,7 +902,7 @@ exports.make = function(_runtimeData, _intents, _register, _globals) {
             register.assertTargetObject(target);
             return C.ERR_INVALID_TARGET;
         }
-        if(!this.pos.inRangeTo(target, 3)) {
+        if(!this.pos.inRangeTo(target, C.RANGE_BUILD)) {
             return C.ERR_NOT_IN_RANGE;
         }
 
@@ -985,7 +985,7 @@ exports.make = function(_runtimeData, _intents, _register, _globals) {
         if(!_hasActiveBodypart(this.body, C.CLAIM)) {
             return C.ERR_NO_BODYPART;
         }
-        if(!target.pos.isNearTo(this.pos)) {
+        if(!target.pos.inRangeTo(this.pos, C.RANGE_CLAIM_CONTROLLER)) {
             return C.ERR_NOT_IN_RANGE;
         }
         if(target.structureType != 'controller') {
@@ -1021,7 +1021,7 @@ exports.make = function(_runtimeData, _intents, _register, _globals) {
         if(!_getActiveBodyparts(this.body, C.CLAIM)) {
             return C.ERR_NO_BODYPART;
         }
-        if(!target.pos.isNearTo(this.pos)) {
+        if(!target.pos.inRangeTo(this.pos, C.RANGE_ATTACK_CONTROLLER)) {
             return C.ERR_NOT_IN_RANGE;
         }
         if(!target.owner && !target.reservation) {
@@ -1059,7 +1059,7 @@ exports.make = function(_runtimeData, _intents, _register, _globals) {
         if(target.upgradeBlocked && target.upgradeBlocked > 0) {
             return C.ERR_INVALID_TARGET;
         }
-        if(!target.pos.inRangeTo(this.pos, 3)) {
+        if(!target.pos.inRangeTo(this.pos, C.RANGE_UPGRADE_CONTROLLER)) {
             return C.ERR_NOT_IN_RANGE;
         }
         if(!target.my) {
@@ -1086,7 +1086,7 @@ exports.make = function(_runtimeData, _intents, _register, _globals) {
             register.assertTargetObject(target);
             return C.ERR_INVALID_TARGET;
         }
-        if(!target.pos.isNearTo(this.pos)) {
+        if(!target.pos.inRangeTo(this.pos, C.RANGE_RESERVE_CONTROLLER)) {
             return C.ERR_NOT_IN_RANGE;
         }
         if(target.structureType != 'controller') {
@@ -1152,7 +1152,7 @@ exports.make = function(_runtimeData, _intents, _register, _globals) {
             register.assertTargetObject(target);
             return C.ERR_INVALID_TARGET;
         }
-        if(!target.pos.isNearTo(this.pos)) {
+        if(!target.pos.inRangeTo(this.pos, C.RANGE_DISMANTLE)) {
             return C.ERR_NOT_IN_RANGE;
         }
         if(this.room.controller && !this.room.controller.my && this.room.controller.safeMode) {
@@ -1183,7 +1183,7 @@ exports.make = function(_runtimeData, _intents, _register, _globals) {
             register.assertTargetObject(target);
             return C.ERR_INVALID_TARGET;
         }
-        if(!target.pos.isNearTo(this.pos)) {
+        if(!target.pos.inRangeTo(this.pos, C.RANGE_GENERATE_SAFEMODE)) {
             return C.ERR_NOT_IN_RANGE;
         }
 
@@ -1201,7 +1201,7 @@ exports.make = function(_runtimeData, _intents, _register, _globals) {
             register.assertTargetObject(target);
             return C.ERR_INVALID_TARGET;
         }
-        if(!target.pos.isNearTo(this.pos)) {
+        if(!target.pos.inRangeTo(this.pos, C.RANGE_SIGN_CONTROLLER)) {
             return C.ERR_NOT_IN_RANGE;
         }
         if(target.structureType != 'controller') {
