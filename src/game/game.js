@@ -189,6 +189,7 @@
 
         require('./rooms').make(runtimeData, intents, register, globals);
         require('./rooms').makePos(register, globals);
+        require('./base-creeps').make(runtimeData, intents, register, globals);
         require('./creeps').make(runtimeData, intents, register, globals);
         require('./structures').make(runtimeData, intents, register, globals);
         require('./sources').make(runtimeData, intents, register, globals);

@@ -30,22 +30,15 @@ exports.make = function(_runtimeData, _intents, _register, _globals) {
     var PowerCreep = register.wrapFn(function(id) {
         var _data = data(id);
         if(_data.room) {
-            globals.RoomObject.call(this, _data.x, _data.y, _data.room);
         }
         this.id = id;
     });
 
-    PowerCreep.prototype = Object.create(globals.RoomObject.prototype);
     PowerCreep.prototype.constructor = PowerCreep;
 
     utils.defineGameObjectProperties(PowerCreep.prototype, data, {
-        name: (o) => o.name,
-        my: (o) => o.user == runtimeData.user._id,
-        owner: (o) => new Object({username: runtimeData.users[o.user].username}),
         level: (o) => o.level,
         className: (o) => o.className,
-        hitsMax: (o) => o.hitsMax,
-        hits: (o) => o.hits,
         shard: (o) => o.shard || undefined,
         spawnCooldownTime: (o) => o.spawnCooldownTime !== null && o.spawnCooldownTime > Date.now() ? o.spawnCooldownTime : undefined,
         deleteTime: (o) => o.deleteTime || undefined,
@@ -53,29 +46,6 @@ exports.make = function(_runtimeData, _intents, _register, _globals) {
             level: i.level,
             cooldown: Math.max(0, (i.cooldownTime || 0) - runtimeData.time)
         })),
-        saying: o => {
-            if(!o.actionLog || !o.actionLog.say) {
-                return undefined;
-            }
-            if(o.user == runtimeData.user._id) {
-                return o.actionLog.say.message;
-            }
-            return o.actionLog.say.isPublic ? o.actionLog.say.message : undefined;
-        },
-        carry: (o) => {
-
-            var result = {energy: 0};
-
-            C.RESOURCES_ALL.forEach(resourceType => {
-                if(o[resourceType]) {
-                    result[resourceType] = o[resourceType];
-                }
-            });
-
-            return result;
-        },
-        carryCapacity: (o) => o.energyCapacity,
-        ticksToLive: (o) => o.ageTime - runtimeData.time,
     });
 
     Object.defineProperty(PowerCreep.prototype, 'memory', {
@@ -107,62 +77,6 @@ exports.make = function(_runtimeData, _intents, _register, _globals) {
 
     PowerCreep.prototype.toString = register.wrapFn(function() {
         return `[powerCreep ${this.name}]`;
-    });
-
-    PowerCreep.prototype.move = register.wrapFn(function(target) {
-        if(!this.room) {
-            return C.ERR_BUSY;
-        }
-        return globals.Creep.prototype.move.call(this, target);
-    });
-
-    PowerCreep.prototype.moveTo = register.wrapFn(function(firstArg, secondArg, opts) {
-        if(!this.room) {
-            return C.ERR_BUSY;
-        }
-        return globals.Creep.prototype.moveTo.call(this, firstArg, secondArg, opts);
-    });
-
-    PowerCreep.prototype.moveByPath = register.wrapFn(function(path) {
-        if(!this.room) {
-            return C.ERR_BUSY;
-        }
-        return globals.Creep.prototype.moveByPath.call(this, path);
-    });
-
-    PowerCreep.prototype.transfer = register.wrapFn(function(target, resourceType, amount) {
-        if(!this.room) {
-            return C.ERR_BUSY;
-        }
-        return globals.Creep.prototype.transfer.call(this, target, resourceType, amount);
-    });
-
-    PowerCreep.prototype.withdraw = register.wrapFn(function(target, resourceType, amount) {
-        if(!this.room) {
-            return C.ERR_BUSY;
-        }
-        return globals.Creep.prototype.withdraw.call(this, target, resourceType, amount);
-    });
-
-    PowerCreep.prototype.drop = register.wrapFn(function(resourceType, amount) {
-        if(!this.room) {
-            return C.ERR_BUSY;
-        }
-        return globals.Creep.prototype.drop.call(this, resourceType, amount);
-    });
-
-    PowerCreep.prototype.pickup = register.wrapFn(function(target) {
-        if(!this.room) {
-            return C.ERR_BUSY;
-        }
-        return globals.Creep.prototype.pickup.call(this, target);
-    });
-
-    PowerCreep.prototype.say = register.wrapFn(function(message, isPublic) {
-        if(!this.room) {
-            return C.ERR_BUSY;
-        }
-        return globals.Creep.prototype.say.call(this, message, isPublic);
     });
 
     PowerCreep.prototype.spawn = register.wrapFn(function(powerSpawn) {
@@ -345,19 +259,6 @@ exports.make = function(_runtimeData, _intents, _register, _globals) {
         return C.OK;
     });
 
-    PowerCreep.prototype.cancelOrder = register.wrapFn(function(name) {
-
-        if(!this.room) {
-            return C.ERR_BUSY;
-        }
-        if(!this.my) {
-            return C.ERR_NOT_OWNER;
-        }
-        if(intents.remove(this.id, name)) {
-            return C.OK;
-        }
-        return C.ERR_NOT_FOUND;
-    });
 
     PowerCreep.prototype.rename = register.wrapFn(function(name) {
 
@@ -372,26 +273,6 @@ exports.make = function(_runtimeData, _intents, _register, _globals) {
         }
 
         intents.pushByName('global', 'renamePowerCreep', {id: this.id, name}, 50);
-        return C.OK;
-    });
-
-    PowerCreep.prototype.notifyWhenAttacked = register.wrapFn(function(enabled) {
-
-        if(!this.room) {
-            return C.ERR_BUSY;
-        }
-        if(!this.my) {
-            return C.ERR_NOT_OWNER;
-        }
-        if(!_.isBoolean(enabled)) {
-            return C.ERR_INVALID_ARGS;
-        }
-
-        if(enabled != data(this.id).notifyWhenAttacked) {
-
-            intents.set(this.id, 'notifyWhenAttacked', {enabled});
-        }
-
         return C.OK;
     });
 
