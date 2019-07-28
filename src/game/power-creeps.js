@@ -30,10 +30,12 @@ exports.make = function(_runtimeData, _intents, _register, _globals) {
     var PowerCreep = register.wrapFn(function(id) {
         var _data = data(id);
         if(_data.room) {
+            globals.BaseCreep.call(this, id);
         }
         this.id = id;
     });
 
+    PowerCreep.prototype = Object.create(globals.BaseCreep.prototype);
     PowerCreep.prototype.constructor = PowerCreep;
 
     utils.defineGameObjectProperties(PowerCreep.prototype, data, {
