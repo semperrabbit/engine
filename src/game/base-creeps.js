@@ -31,7 +31,9 @@ exports.make = function(_runtimeData, _intents, _register, _globals) {
     }
 
     var data = (id) => {
-        return Object.assign({}, (runtimeData.userPowerCreeps[id] || {}), runtimeData.roomObjects[id]);
+        if(runtimeData.userPowerCreeps[id])
+            return Object.assign({}, runtimeData.userPowerCreeps[id], runtimeData.roomObjects[id]);
+        return runtimeData.roomObjects[id];
     }
 
     var BaseCreep = register.wrapFn(function(id, type) {
