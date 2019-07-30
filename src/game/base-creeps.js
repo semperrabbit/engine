@@ -30,12 +30,18 @@ exports.make = function(_runtimeData, _intents, _register, _globals) {
         return;
     }
 
-    var BaseCreep = register.wrapFn(function(id, data) {
+    var data = (id) => {
+        return Object.assign({}, (runtimeData.userPowerCreeps[id] || {}), runtimeData.roomObjects[id]);
+    }
+
+    var BaseCreep = register.wrapFn(function(id, type) {
         if(id) {
-			if(typeof data !== "function")
-				throw("Bad data function in BaseCreep.constructor")
-			var _data = data(id);
-			globals.RoomObject.call(this, _data.x, _data.y, _data.room, _data.effects);
+            if(type !== "Creep" && type !== "PowerCreep")
+                throw new Error("Bad type in BaseCreep.constructor")
+            var _data = data(id);
+            if(_data.room) {
+                globals.RoomObject.call(this, _data.x, _data.y, _data.room, _data.effects);
+            }
         }
         this.id = id;
     });
