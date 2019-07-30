@@ -30,7 +30,7 @@ exports.make = function(_runtimeData, _intents, _register, _globals) {
     var PowerCreep = register.wrapFn(function(id) {
         var _data = data(id);
         if(_data.room) {
-            globals.BaseCreep.call(this, id);
+            globals.BaseCreep.call(this, id, data);
         }
         this.id = id;
     });

@@ -56,7 +56,7 @@ exports.make = function(_runtimeData, _intents, _register, _globals) {
     var Creep = register.wrapFn(function(id) {
         if(id) {
             var _data = data(id);
-            globals.BaseCreep.call(this, id);
+            globals.BaseCreep.call(this, id, data);
         }
     });
 

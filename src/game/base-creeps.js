@@ -30,19 +30,14 @@ exports.make = function(_runtimeData, _intents, _register, _globals) {
         return;
     }
 
-    var data = (id) => {
-        if(!id || !runtimeData.roomObjects[id]) {
-            throw new Error("Could not find an object with ID "+id);
-        }
-        return runtimeData.roomObjects[id];
-    };
-
-    var BaseCreep = register.wrapFn(function(id) {
+    var BaseCreep = register.wrapFn(function(id, data) {
         if(id) {
-            var _data = data(id);
-            globals.RoomObject.call(this, _data.x, _data.y, _data.room, _data.effects);
-            this.id = id;
+			if(typeof data !== "function")
+				throw("Bad data function in BaseCreep.constructor")
+			var _data = data(id);
+			globals.RoomObject.call(this, _data.x, _data.y, _data.room, _data.effects);
         }
+        this.id = id;
     });
 
     BaseCreep.prototype = Object.create(globals.RoomObject.prototype);
